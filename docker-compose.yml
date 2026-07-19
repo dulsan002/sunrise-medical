@@ -1,0 +1,65 @@
+services:
+  # ─── PostgreSQL Database ───────────────────────────────
+  sdcms-db:
+    image: postgres:15-alpine
+    container_name: sdcms-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-sdcms_db}
+      POSTGRES_USER: ${POSTGRES_USER:-sdcms_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sdcms_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - sdcms-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sdcms_user} -d ${POSTGRES_DB:-sdcms_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sdcms-network
+
+  # ─── Spring Boot Backend ───────────────────────────────
+  sdcms-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sdcms-backend
+    restart: unless-stopped
+    depends_on:
+      sdcms-db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://sdcms-db:5432/${POSTGRES_DB:-sdcms_db}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-sdcms_user}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-sdcms_password}
+      APP_JWT_SECRET: ${JWT_SECRET:-9a4f2c8d3e7b1a5f6c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c}
+      APP_JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-28800000}
+    ports:
+      - "8080:8080"
+    networks:
+      - sdcms-network
+
+  # ─── React Frontend (Nginx) ───────────────────────────
+  sdcms-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sdcms-frontend
+    restart: unless-stopped
+    depends_on:
+      - sdcms-backend
+    ports:
+      - "80:80"
+    networks:
+      - sdcms-network
+
+volumes:
+  sdcms-pgdata:
+    driver: local
+
+networks:
+  sdcms-network:
+    driver: bridge
