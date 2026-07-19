@@ -58,6 +58,24 @@ cd sunrise-medical
 ```
 *Note: Press `CTRL+C` at any time to safely shut down both servers.*
 
+#### Fully Manual Execution (Terminal)
+If you prefer to run the frontend and backend manually in separate terminal windows instead of using the script:
+
+**Terminal 1 (Backend):**
+```bash
+cd backend
+./mvnw clean install "-DskipTests"
+./mvnw spring-boot:run "-Dspring-boot.run.profiles=dev"
+```
+*(Windows users: Use `mvnw.cmd` instead of `./mvnw`)*
+
+**Terminal 2 (Frontend):**
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
 #### Accessing the Application
 - **Frontend Web App**: http://localhost:5173
 - **Backend API Docs**: http://localhost:8080/swagger-ui.html
