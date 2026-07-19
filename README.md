@@ -48,9 +48,9 @@ We have provided an automated script that securely fetches all required dependen
 **For Mac/Linux Users:**
 ```bash
 # 1. Database Setup
-# Ensure PostgreSQL is running on port 5432
-# Create a database named 'sdcms_db'
-# Create a user 'sdcms_user' with password 'sdcms_password'
+We have provided an automated script to create the database.
+**Windows:** Double-click `setup-db.bat` and enter your main Postgres password.
+**Mac/Linux:** Run `./setup-db.sh` and enter your main Postgres password.
 
 # 2. Run the Startup Script
 cd sunrise-medical
