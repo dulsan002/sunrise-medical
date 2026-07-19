@@ -25,7 +25,7 @@ echo.
 echo [2/4] Initializing Backend (Spring Boot)...
 cd backend
 echo Fetching Java dependencies and starting Spring Boot on port 8080...
-start "Backend (Spring Boot)" cmd /c "mvnw.cmd clean install -DskipTests && mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=dev"
+start "Backend (Spring Boot)" cmd /k "mvnw.cmd clean install -DskipTests && mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=dev"
 cd ..
 echo Backend process started in a new window.
 echo.
@@ -33,7 +33,7 @@ echo.
 echo [3/4] Initializing Frontend (React/Vite)...
 cd frontend
 echo Fetching Node dependencies and starting Vite...
-start "Frontend (React)" cmd /c "npm install && npm run dev"
+start "Frontend (React)" cmd /k "npm install && npm run dev"
 cd ..
 echo Frontend process started in a new window.
 echo.
